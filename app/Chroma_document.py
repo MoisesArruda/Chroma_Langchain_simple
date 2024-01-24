@@ -1,14 +1,14 @@
 '''Este arquivo foi criado com o objetivo de extrair as informações de um documento PDF, para que o modelo possa /
 armazenar os chunks, realizar o aprendizado, e transmitir a resposta para o usuário e para um arquivo .JSON.
-Este projeto utiliza as seguintes funções:
+Este projeto utiliza as seguintes funções e métodos:
 
     PyPDFLoader ==> Carrega o documento, indicado quando se pretende trabalhar com PDF.
 
-    load ==> Realizar o carregamento do arquivo e permite o aproveitamento de metadados. Retorna uma lista de objetos /
+    load ==> Realiza o carregamento do arquivo e permite o aproveitamento de metadados. Retorna uma lista de objetos /
         Document, onde cada representa uma página do PDF. Melhor para situações onde o arquivo trata de diversos assuntos /
         ou arquivos menores
 
-    load_and_split ==> Realizar o carregamento do arquivo, retornando uma lista de listas, onde cada lista representa um /
+    load_and_split ==> Realiza o carregamento do arquivo, retornando uma lista de listas, onde cada lista representa um /
         assunto do PDF. Melhor para situações onde o arquivo é maior, pois só armazena o texto dos assuntos relevantes.
 
     CharacterTextSplitter ==> Indicada para arquivos menores ou com menor complexidade.
@@ -22,7 +22,7 @@ Este projeto utiliza as seguintes funções:
     ConversationBufferMemory = Armazena o histórico completo da conversa em uma lista, ideal para chatbots/
         onde é necessário lembrar o que foi dito anteriormente para responder as instruções.'''
 
-#%%
+
 import timeit
 
 from langchain.vectorstores import Chroma
@@ -35,7 +35,7 @@ from langchain.chains import LLMChain
 from langchain.cache import InMemoryCache
 from langchain.chains import RetrievalQA
 
-#%%
+
 llm_chat = create_chat()
 llm_embeddings = create_embeddings()
 prompt = create_prompts()
@@ -48,16 +48,13 @@ try:
 except (FileNotFoundError, ValueError) as e:
     print(e)
 
-#%%
+
 # Cria um objeto passando o caminho completo do arquivo.
 pdf_loader = PyPDFLoader(f'{file}/{data}')
 
-#%%
 # Método load carregar o PDF, é possível realizar o aproveitamento de metadados
 pages = pdf_loader.load()
-pages
 
-#%%
 # Criação do objeto CharacterTextSplitter para gerar o chunks
 text_splitter = CharacterTextSplitter(
     # Tamanho do chunk/texto que vai estar ali dentro
@@ -67,14 +64,10 @@ text_splitter = CharacterTextSplitter(
     # Medir o comprimento
     length_function=len
 )
-#print(text_splitter)
 
-#%%
 # Criação do chunks a partir da divisão de páginas
 chunks = text_splitter.split_documents(pages)
-#print(chunks)
 
-#%%
 # Realizar o armazenamento do tempo de resposta
 llm_cache = InMemoryCache()
 

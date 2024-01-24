@@ -1,8 +1,8 @@
 ''' Este arquivo foi criado com o objetivo de extrair as informações de um documento PDF e passa-las para um TEXTO /
 para que o modelo possa armazenar os chunks e transmitir a resposta para o usuário e para um arquivo .JSON.
-Este projeto utiliza as seguintes funções:
+Este projeto utiliza as seguintes funções e métodos:
     
-    PdfReader ==> Carrega e divide o documento, indicado quando se deseja trabalhar com textos
+    PdfReader ==> Carrega o documento, indicado quando se deseja trabalhar com textos.
     
     extract_text ==> Extrair o texto do documento.
     
@@ -12,7 +12,7 @@ Este projeto utiliza as seguintes funções:
     
     split_text ==> Separa o texto em chunks.
     
-    Chroma.from_texts ==> Armazenar os chunks dentro do Vector DB.
+    Chroma.from_texts ==> Armazena os chunks dentro do Vector DB.
 
     ConversationBufferWindowMemory ==> Armazena apenas as interações definidas pelo K, ideal quando o histórico/
         completo não é necessário, ou a memória é limitada'''
@@ -44,13 +44,11 @@ except (FileNotFoundError, ValueError) as e:
 
 # Passar o caminho completo do arquivo, fazer a leitura e retornar como lista
 pdf_loader = PdfReader(f'{file}/{data}')
-print(pdf_loader)
 
 # Armazenar todo o texto do documento em uma variável para realizar o processamento
 text = ""
 for page in pdf_loader.pages:
     text += page.extract_text()
-#print(text)
 
 # Criação do objeto RecursiveCharacterTextSplitter para gerar o chunks
 text_splitter = RecursiveCharacterTextSplitter(
@@ -64,7 +62,6 @@ text_splitter = RecursiveCharacterTextSplitter(
 
 # Realizar a divisão do Texto e gerar os chunks
 chunks = text_splitter.split_text(text)
-print(chunks)
 
 # Realizar o armazenamento do tempo de resposta
 llm_cache = InMemoryCache()
