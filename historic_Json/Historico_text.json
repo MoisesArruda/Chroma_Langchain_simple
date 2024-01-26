@@ -1,0 +1,10 @@
+[
+    {
+        "Query": "Como utilizar o docker?",
+        "Answer": "Para utilizar o Docker, é necessário instalar o Docker Engine em seu computador e, em seguida, utilizar comandos para criar, executar e gerenciar containers. É possível automatizar a criação e gestão de containers utilizando o Docker Compose. É importante definir o Dockerfile da aplicação e os serviços em um arquivo de configuração. Para enviar imagens para um repositório, é necessário criar uma conta no Docker Hub e utilizar o comando \"docker push\". O Docker é uma ferramenta para criar e manter containers, permitindo isolar serviços de forma isolada do sistema operacional host."
+    },
+    {
+        "Query": "O que é uma imagem?",
+        "Answer": "Uma imagem no Docker é um pacote que contém todos os elementos necessários para executar um aplicativo, incluindo o código, as bibliotecas e as dependências. É criada a partir de um Dockerfile e pode ser compartilhada e reutilizada em diferentes ambientes."
+    }
+]

@@ -20,7 +20,9 @@ para que o modelo possa armazenar os chunks e transmitir a resposta para o usuá
 * **split_text** ==> Separa o texto em chunks.
 * **Chroma.from_texts** ==> Armazenar os chunks dentro do Vector DB.
 * **ConversationBufferWindowMemory** ==> Armazena apenas as interações definidas pelo K, ideal quando o histórico 
-    completo não é necessário, ou a memória é limitada
+    completo não é necessário, ou a memória é limitada.
+* **run** = Execute o modelo, vai me retornar um objeto chain. Posteriormente será aproveitado na qa_chain.
+* **RetrievalQA** ==> Responde a pergunta utilizando o modelo, maneira mais personalizavel.
 
 ## Explicação Chroma_document.py
 
@@ -43,3 +45,5 @@ armazenar os chunks, realizar o aprendizado, e transmitir a resposta para o usu�
 * **Chroma.from_documents** ==> Armazenar os chunks dentro do Vector DB.
 * **ConversationBufferMemory** = Armazena o histórico completo da conversa em uma lista, ideal para chatbots onde é necessário lembrar
     o que foi dito anteriormente para responder as instruções.
+* **run** = Execute o modelo, vai me retornar um objeto chain. Posteriormente será aproveitado na qa_chain.
+* **RetrievalQA** ==> Responde a pergunta utilizando o modelo, maneira mais personalizavel.

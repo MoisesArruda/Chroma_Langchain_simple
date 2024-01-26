@@ -1,0 +1,10 @@
+[
+    {
+        "Query": "O que é o Docker?",
+        "Answer": "O Docker é uma ferramenta para criar e manter containers, que são responsáveis por armazenar vários serviços de forma isolada do SO host, como web server, banco de dados, aplicação, memcached, etc. Ele é baseado em LXC (LinuX Containers) e funciona isolando processos do sistema operacional host. É uma espécie de virtualização bastante leve, pois não faz uso de emulação ou suporte a hardware, apenas proporciona a execução de vários sistemas Linux de forma isolada. Além disso, ele utiliza o mesmo Linux Kernel do servidor host, o que torna tudo muito rápido."
+    },
+    {
+        "Query": "Como utilizar o docker?",
+        "Answer": "Para utilizar o Docker, é necessário instalar a ferramenta em seu sistema operacional. No Linux, é possível instalar facilmente através do gerenciador de pacotes. Depois de instalado, é possível criar e gerenciar containers através de comandos no terminal. Para automatizar a criação e gestão de containers, é possível utilizar o Docker Compose. É possível também utilizar o Docker para isolar aplicações desktop em containers, inclusive aplicações GUI. Para isso, é necessário mapear o volume do container para utilizar o socket gráfico X11 do Linux e definir a variável ambiente DISPLAY para o container com o mesmo valor que é usado no host local."
+    }
+]

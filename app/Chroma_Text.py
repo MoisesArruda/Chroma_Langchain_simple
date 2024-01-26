@@ -15,10 +15,15 @@ Este projeto utiliza as seguintes funções e métodos:
     Chroma.from_texts ==> Armazena os chunks dentro do Vector DB.
 
     ConversationBufferWindowMemory ==> Armazena apenas as interações definidas pelo K, ideal quando o histórico/
-        completo não é necessário, ou a memória é limitada'''
+        completo não é necessário, ou a memória é limitada
+        
+    run ==> Execute o modelo, vai me retornar um objeto chain. Posteriormente será aproveitado na qa_chain, tem uma performance /
+    de resposta melhor do que o RetrievalQA. 
+    
+    RetrievalQA ==> Responde a pergunta utilizando o modelo, maneira mais personalizavel.'''
 
 import timeit
-
+import json
 from langchain.vectorstores import Chroma
 from langchain.memory import ConversationBufferWindowMemory,FileChatMessageHistory
 from langchain.chains import LLMChain
@@ -73,7 +78,7 @@ db = Chroma.from_texts(
     cache=llm_cache
 )
 
-query = "Como utilizar o docker?"
+query = "O que é uma imagem?"
 
 # Realizar a busca por similirdade, retorna a quantidade especificada pelo K
 contexto = db.similarity_search(query, k=3)
@@ -89,8 +94,8 @@ memory = ConversationBufferWindowMemory(
     #
     return_messages=True,
     # Armazena as respostas em um arquivo .json
-    chat_memory=FileChatMessageHistory(file_path="messages_recursive.json"),
-    # Tras a pesquisa por similaridade do conteúdo que gerou a resposta
+    chat_memory=FileChatMessageHistory(file_path="historic_json/messages_recursive.json"),
+    # Traz a pesquisa por similaridade do conteúdo que gerou a resposta
     contexto=contexto
 )
 
@@ -98,7 +103,7 @@ memory = ConversationBufferWindowMemory(
 llm_chain=LLMChain(
     # Modelo que será utilizado
     llm=llm_chat,
-     # Definição do prompt utilizado
+    # Definição do prompt utilizado
     prompt=prompt,
     # Retornar logs
     verbose=True,
@@ -133,3 +138,19 @@ elapsed_time = timeit.default_timer() - start_time
 print(qa_chain(query))
 print(f"Executado em {elapsed_time} segundos")
 
+# Gerar um arquivo .json personalizado
+try:
+    with open("historic_json/Historico_text.json", "r", encoding="utf-8") as arquivo:
+        historico = json.load(arquivo)
+except (json.JSONDecodeError, FileNotFoundError):
+    historico = []
+
+nova_entrada = {
+    "Query": query,
+    "Answer": response
+}
+
+historico.append(nova_entrada)
+
+with open("historic_json/Historico_text.json", "w",encoding="utf-8") as arquivo:
+    json.dump(historico, arquivo, ensure_ascii=False, indent=4)

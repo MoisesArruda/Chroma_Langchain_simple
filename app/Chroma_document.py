@@ -6,25 +6,30 @@ Este projeto utiliza as seguintes funções e métodos:
 
     load ==> Realiza o carregamento do arquivo e permite o aproveitamento de metadados. Retorna uma lista de objetos /
         Document, onde cada representa uma página do PDF. Melhor para situações onde o arquivo trata de diversos assuntos /
-        ou arquivos menores
+        ou arquivos menores.
 
     load_and_split ==> Realiza o carregamento do arquivo, retornando uma lista de listas, onde cada lista representa um /
         assunto do PDF. Melhor para situações onde o arquivo é maior, pois só armazena o texto dos assuntos relevantes.
 
     CharacterTextSplitter ==> Indicada para arquivos menores ou com menor complexidade.
         Para divisão básica em fragmentos e acesso direto ao texto /
-        com possibilidade de sobreposição de fragmentos(chunk_overlap) para melhor aprendizagem
+        com possibilidade de sobreposição de fragmentos(chunk_overlap) para melhor aprendizagem.
 
     split_documents ==> Separa o conteúdo do PDF em chunks.
 
     Chroma.from_documents ==> Armazenar os chunks dentro do Vector DB.
     
     ConversationBufferMemory = Armazena o histórico completo da conversa em uma lista, ideal para chatbots/
-        onde é necessário lembrar o que foi dito anteriormente para responder as instruções.'''
+        onde é necessário lembrar o que foi dito anteriormente para responder as instruções.
+
+    run ==> Execute o modelo, vai me retornar um objeto chain. Posteriormente será aproveitado na qa_chain, tem uma performance /
+    de resposta melhor do que o RetrievalQA. 
+    
+    RetrievalQA ==> Responde a pergunta utilizando o modelo, maneira mais personalizavel.'''
 
 
 import timeit
-
+import json
 from langchain.vectorstores import Chroma
 from langchain.memory import ConversationBufferMemory,FileChatMessageHistory
 from langchain.chains import LLMChain
@@ -74,7 +79,7 @@ llm_cache = InMemoryCache()
 # Realizar o armazenamento no DB
 db = Chroma.from_documents(documents=chunks, embedding=llm_embeddings,cache=llm_cache)
 
-query = "O que é o Docker?"
+query = "Como utilizar o docker?"
 
 # Contexto da resposta, pesquisa por similaridade
 contexto = db.similarity_search(query, k=3)
@@ -82,7 +87,7 @@ contexto = db.similarity_search(query, k=3)
 # Criação do objeto ConversationBufferMemory para armazenar o chat
 memory = ConversationBufferMemory(
     # Armazena as respostas em um arquivo .json
-    chat_memory=FileChatMessageHistory(file_path="messages_load.json"),
+    chat_memory=FileChatMessageHistory(file_path="historic_json/messages_load.json"),
     # Armazena o histórico da interação com o modelo
     memory_key="chat_history",
     # Chave do input
@@ -128,3 +133,19 @@ elapsed_time = timeit.default_timer() - start_time
 print(qa_chain(query))
 print(f"Executado em {elapsed_time} segundos")
 
+# Gerar um arquivo .json personalizado
+try:
+    with open("historic_json/Historico_document.json", "r", encoding="utf-8") as arquivo:
+        historico = json.load(arquivo)
+except (json.JSONDecodeError, FileNotFoundError):
+    historico = []
+
+nova_entrada = {
+    "Query": query,
+    "Answer": response
+}
+
+historico.append(nova_entrada)
+
+with open("historic_json/Historico_document.json", "w",encoding="utf-8") as arquivo:
+    json.dump(historico, arquivo, ensure_ascii=False, indent=4)
